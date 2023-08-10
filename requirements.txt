@@ -1,0 +1,6 @@
+bridgestan
+cmdstanpy
+numpy
+flake8
+pytest
+pytest-cov
