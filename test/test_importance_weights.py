@@ -171,8 +171,8 @@ class TestCheckSampleDim:
         assert sample_check == True
 
     def test_bad(self, eight_schools_bs_model, seven_schools_samples):
-        sample_check = check_sample_dim(eight_schools_bs_model, seven_schools_samples)
-        assert sample_check == False
+        with np.testing.assert_raises(ValueError):
+            check_sample_dim(eight_schools_bs_model, seven_schools_samples)
 
     def test_invalid_input_a(self, invalid_model, eight_schools_samples):
         with np.testing.assert_raises(TypeError):
@@ -189,8 +189,8 @@ class TestCheckModels:
         assert model_check == True
 
     def test_bad(self, eight_schools_bs_model, seven_schools_bs_model):
-        model_check = check_models(eight_schools_bs_model, seven_schools_bs_model)
-        assert model_check == False
+        with np.testing.assert_raises(ValueError):
+            check_models(eight_schools_bs_model, seven_schools_bs_model)
 
     def test_invalid_input_a(self, invalid_model, eight_schools_bs_model):
         with np.testing.assert_raises(TypeError):

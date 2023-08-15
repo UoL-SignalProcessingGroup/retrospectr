@@ -68,7 +68,10 @@ def check_sample_dim(model, samples) -> bool:
 
     d = model.param_num()
     sample_d = samples.shape[2]
-    return d == sample_d
+    check = d == sample_d
+    if check is False:
+        raise ValueError("Dimension of model with old_data does not match dimension of samples (", d, " != ", sample_d)
+    return check
 
 
 def check_models(model, new_model) -> bool:
@@ -85,4 +88,7 @@ def check_models(model, new_model) -> bool:
 
     old_names = model.param_names()
     new_names = new_model.param_names()
-    return old_names == new_names
+    check = old_names == new_names
+    if check is False:
+        raise ValueError("Models + dimensions do not match")
+    return check
