@@ -27,7 +27,7 @@ def evaluate_logProb(model, samples):
         raise TypeError("'model' is not of type ", str(bs.model.StanModel))
 
     unc_samples = model.param_unconstrain(samples)
-    logProb = model.log_density(unc_samples, jacobian=T)
+    logProb = model.log_density(unc_samples, jacobian=True)
     return logProb
 
 

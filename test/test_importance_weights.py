@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import ctypes
 import pytest
 import bridgestan as bs
 import cmdstanpy
@@ -13,8 +14,8 @@ from retrospectr.importance_weights import (
     check_models
 )
 
-# TEST_MODELS_PATH = os.path.join(Path(__file__).parent, 'test_models')
-TEST_MODELS_PATH = os.path.join('test', 'test_models')
+TEST_MODELS_PATH = os.path.join(Path(__file__).parent, 'test_models')
+#TEST_MODELS_PATH = os.path.join('test', 'test_models')
 
 
 @pytest.fixture
@@ -129,14 +130,15 @@ def invalid_model():
 class TestEvaluateLogProb():
     def test_good(self, eight_schools_bs_model, eight_schools_samples):
         with np.testing.assert_no_warnings():
-            evaluate_logProb(eight_schools_bs_model, eight_schools_samples)
+            samples = np.array(eight_schools_samples[0])
+            evaluate_logProb(eight_schools_bs_model, samples)
 
     def test_invalid_model(self, invalid_model, eight_schools_samples):
         with np.testing.assert_raises(TypeError):
             evaluate_logProb(invalid_model, eight_schools_samples)
 
     def test_invalid_samples(self, eight_schools_bs_model, invalid_model):
-        with np.testing.assert_raises(TypeError):
+        with np.testing.assert_raises(ctypes.ArgumentError):
             evaluate_logProb(eight_schools_bs_model, invalid_model)
 
 
