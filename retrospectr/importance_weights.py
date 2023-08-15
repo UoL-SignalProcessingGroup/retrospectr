@@ -25,9 +25,22 @@ def evaluate_logProb(model, samples):
     """
     if not isinstance(model, bs.model.StanModel):
         raise TypeError("'model' is not of type ", str(bs.model.StanModel))
+    
+    if not isinstance(samples, np.ndarray):
+        raise TypeError("'samples' is not of type ", str(np.ndarray))
+    
+    if samples.ndim == 1:
+        # Single iteration
+        samples = samples.reshape((1,1,samples.shape[0]))
+    
 
-    unc_samples = [model.param_unconstrain(np.array(x)) for x in samples]
-    logProb = [model.log_density(x, jacobian=True) for x in unc_samples]
+    unc_samples = np.array([[
+        model.param_unconstrain(np.array(samples[iter,chain,:])) for chain in range(samples.shape[1])]
+        for iter in range(samples.shape[0])])
+    
+    logProb = np.array([[
+        model.log_density(np.array(unc_samples[iter,chain,:])) for chain in range(unc_samples.shape[1])]
+        for iter in range(unc_samples.shape[0])])
     return logProb
 
 

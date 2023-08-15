@@ -77,7 +77,7 @@ def eight_schools_bad_data():
 @pytest.fixture
 def eight_schools_cmdstanpy_fit(eight_schools_model_file, eight_schools_data):
     model = cmdstanpy.CmdStanModel(stan_file=eight_schools_model_file)
-    fit = model.sample(data=eight_schools_data, chains=1, iter_sampling=200, iter_warmup=200, seed=0)
+    fit = model.sample(data=eight_schools_data, chains=2, iter_sampling=200, iter_warmup=200, seed=0)
     return fit
 
 
@@ -136,9 +136,9 @@ class TestCalculateLogWeights:
 
 class TestEvaluateLogProb():
     def test_good_single(self, eight_schools_bs_model, eight_schools_samples, eight_schools_logProbs):
-        samples = np.array(eight_schools_samples[0])
+        samples = eight_schools_samples[0,0,:]
         log_prob = evaluate_logProb(eight_schools_bs_model, samples)
-        np.testing.assert_almost_equal(log_prob, eight_schools_logProbs[0])
+        np.testing.assert_almost_equal(log_prob, eight_schools_logProbs[0,0])
 
     def test_good_array(self, eight_schools_bs_model, eight_schools_samples, eight_schools_logProbs):
         samples = np.array(eight_schools_samples)
@@ -151,7 +151,7 @@ class TestEvaluateLogProb():
             evaluate_logProb(invalid_model, eight_schools_samples)
 
     def test_invalid_samples(self, eight_schools_bs_model, invalid_model):
-        with np.testing.assert_raises(ctypes.ArgumentError):
+        with np.testing.assert_raises(TypeError):
             evaluate_logProb(eight_schools_bs_model, invalid_model)
 
 
