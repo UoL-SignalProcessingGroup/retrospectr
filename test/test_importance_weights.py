@@ -40,6 +40,13 @@ def eight_schools_samples():
 
 
 @pytest.fixture
+def eight_schools_logProbs():
+    return np.load(os.path.join(
+        TEST_MODELS_PATH, 'eight_schools', 'eight_schools_logProbs.npy'
+    ))
+
+
+@pytest.fixture
 def eight_schools_new_data():
     return os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools.new_data.json'
@@ -110,13 +117,13 @@ def invalid_model():
     )
 
 
-# class TestCalculateLogWeights:
-#     def test_good(eight_schools, eight_schools_samples, eight_schools_data, eight_schools_new_data):
-#       np.testing.assert_no_warnings(
-#           log_weights = calculate_log_weights(
-#               eight_schools, eight_schools_samples,
-#               eight_schools_data, eight_schools_new_data)
-#       )
+class TestCalculateLogWeights:
+    def test_good(eight_schools, eight_schools_samples, eight_schools_data, eight_schools_new_data):
+        np.testing.assert_no_warnings(
+            log_weights = calculate_log_weights(
+              eight_schools, eight_schools_samples,
+              eight_schools_data, eight_schools_new_data)
+        )
 
 #     def test_invalid_data():
 
@@ -128,10 +135,16 @@ def invalid_model():
 
 
 class TestEvaluateLogProb():
-    def test_good(self, eight_schools_bs_model, eight_schools_samples):
-        with np.testing.assert_no_warnings():
-            samples = np.array(eight_schools_samples[0])
-            evaluate_logProb(eight_schools_bs_model, samples)
+    def test_good_single(self, eight_schools_bs_model, eight_schools_samples, eight_schools_logProbs):
+        samples = np.array(eight_schools_samples[0])
+        log_prob = evaluate_logProb(eight_schools_bs_model, samples)
+        np.testing.assert_almost_equal(log_prob, eight_schools_logProbs[0])
+
+    def test_good_array(self, eight_schools_bs_model, eight_schools_samples, eight_schools_logProbs):
+        samples = np.array(eight_schools_samples)
+        log_prob = evaluate_logProb(eight_schools_bs_model, samples)
+        np.testing.assert_almost_equal(log_prob, eight_schools_logProbs)
+
 
     def test_invalid_model(self, invalid_model, eight_schools_samples):
         with np.testing.assert_raises(TypeError):

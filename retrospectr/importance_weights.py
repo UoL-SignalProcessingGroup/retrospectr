@@ -26,8 +26,8 @@ def evaluate_logProb(model, samples):
     if not isinstance(model, bs.model.StanModel):
         raise TypeError("'model' is not of type ", str(bs.model.StanModel))
 
-    unc_samples = model.param_unconstrain(samples)
-    logProb = model.log_density(unc_samples, jacobian=True)
+    unc_samples = [model.param_unconstrain(np.array(x)) for x in samples]
+    logProb = [model.log_density(x, jacobian=True) for x in unc_samples]
     return logProb
 
 
