@@ -45,6 +45,11 @@ def eight_schools_logProbs():
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools_logProbs.npy'
     ))
 
+@pytest.fixture
+def eight_schools_log_weights():
+    return np.load(os.path.join(
+        TEST_MODELS_PATH, 'eight_schools', 'eight_schools_log_weights.npy'
+    ))
 
 @pytest.fixture
 def eight_schools_new_data():
@@ -118,12 +123,12 @@ def invalid_model():
 
 
 class TestCalculateLogWeights:
-    def test_good(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_new_data):
-        np.testing.assert_no_warnings(
-            log_weights = calculate_log_weights(
-              eight_schools_model_file, eight_schools_samples,
-              eight_schools_data, eight_schools_new_data)
-        )
+    def test_good(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_new_data, eight_schools_log_weights):
+        log_weights = calculate_log_weights(
+            eight_schools_model_file, eight_schools_samples,
+            eight_schools_data, eight_schools_new_data)
+        np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
+        
 
     # Should get RuntimeError from bridgestan
     def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data, eight_schools_new_data):
