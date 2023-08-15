@@ -7,7 +7,7 @@ import cmdstanpy
 import numpy as np
 
 from retrospectr.importance_weights import (
-    # calculate_log_weights,
+    calculate_log_weights,
     evaluate_logProb,
     extract_samples,
     check_sample_dim,
@@ -118,19 +118,39 @@ def invalid_model():
 
 
 class TestCalculateLogWeights:
-    def test_good(eight_schools, eight_schools_samples, eight_schools_data, eight_schools_new_data):
+    def test_good(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_new_data):
         np.testing.assert_no_warnings(
             log_weights = calculate_log_weights(
-              eight_schools, eight_schools_samples,
+              eight_schools_model_file, eight_schools_samples,
               eight_schools_data, eight_schools_new_data)
         )
 
-#     def test_invalid_data():
-
-
+    # Should get RuntimeError from bridgestan
+    def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data, eight_schools_new_data):
+        with np.testing.assert_raises(RuntimeError):
+            log_weights = calculate_log_weights(
+              eight_schools_model_file, eight_schools_samples,
+              eight_schools_bad_data, eight_schools_new_data)
+            
+    # Should get RuntimeError from bridgestan
+    def test_invalid_new_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_bad_data):
+        with np.testing.assert_raises(RuntimeError):
+            log_weights = calculate_log_weights(
+              eight_schools_model_file, eight_schools_samples,
+              eight_schools_data, eight_schools_bad_data)
+            
+    def test_invalid_stan_model(self, invalid_model, eight_schools_samples, eight_schools_data, eight_schools_new_data):
+        with np.testing.assert_raises(ValueError):
+            log_weights = calculate_log_weights(
+              invalid_model, eight_schools_samples,
+              eight_schools_data, eight_schools_new_data)
+            
+    def test_invalid_samples(self, invalid_model, seven_schools_samples, eight_schools_data, eight_schools_new_data):
+        with np.testing.assert_raises(ValueError):
+            log_weights = calculate_log_weights(
+              invalid_model, seven_schools_samples,
+              eight_schools_data, eight_schools_new_data)
 #     def test_invalid_stan_model():
-
-
 #     def test_invalid_samples():
 
 

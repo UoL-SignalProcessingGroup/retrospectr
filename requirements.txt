@@ -1,6 +1,7 @@
 bridgestan
 cmdstanpy
 numpy
+scipy
 flake8
 pytest
 pytest-cov
