@@ -37,13 +37,17 @@ eight_schools_data = os.path.join(model_path, "eight_schools.data.json")
 
 model = bs.StanModel.from_stan_file(eight_schools_model_file, model_data=eight_schools_data)
 
-samples =  np.load(os.path.join(model_path, "eight_schools_samples.npy"))
-unc_samples = np.array([[model.param_unconstrain(np.array(samples[iter,chain,:])) for chain in range(samples.shape[1])] for iter in range(samples.shape[0])])
-logProbs = np.array([[model.log_density(unc_samples[iter, chain], jacobian=True) for chain in range(samples.shape[1])] for iter in range(samples.shape[0])])
+samples = np.load(os.path.join(model_path, "eight_schools_samples.npy"))
+unc_samples = np.array([[model.param_unconstrain(np.array(samples[iter, chain, :])) for chain in range(samples.shape[1])]
+                        for iter in range(samples.shape[0])])
+logProbs = np.array([[model.log_density(unc_samples[iter, chain], jacobian=True) for chain in range(samples.shape[1])]
+                     for iter in range(samples.shape[0])])
 np.save(os.path.join(model_path, "eight_schools_logProbs.npy"), logProbs)
 
-new_model = bs.StanModel.from_stan_file(eight_schools_model_file, model_data=os.path.join(model_path, 'eight_schools.new_data.json'))
-new_logProbs = np.array([[new_model.log_density(unc_samples[iter, chain], jacobian=True) for chain in range(samples.shape[1])] for iter in range(samples.shape[0])])
+new_model = bs.StanModel.from_stan_file(
+    eight_schools_model_file, model_data=os.path.join(model_path, 'eight_schools.new_data.json'))
+new_logProbs = np.array([[new_model.log_density(unc_samples[iter, chain], jacobian=True) for chain in range(samples.shape[1])]
+                         for iter in range(samples.shape[0])])
 
 log_weights = new_logProbs - logProbs
 log_weights = log_weights - logsumexp(log_weights)

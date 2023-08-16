@@ -16,15 +16,15 @@ def calculate_log_weights(model, old_samples, old_data, new_data):
 
     returns: log importance weights of old_samples conditioned on new data
     """
-    #check old samples match the model+old_data
+    # check old samples match the model+old_data
     old_model = bs.StanModel.from_stan_file(model, model_data=old_data)
     check_sample_dim(old_model, old_samples)
 
-    #check model+new_data matches the model+old_data    
+    # check model+new_data matches the model+old_data
     new_model = bs.StanModel.from_stan_file(model, model_data=new_data)
     check_models(old_model, new_model)
-    
-    #calculate logProbs
+
+    # calculate logProbs
     logProb_old = evaluate_logProb(old_model, old_samples)
     logProb_new = evaluate_logProb(new_model, old_samples)
 
@@ -41,21 +41,20 @@ def evaluate_logProb(model, samples):
     """
     if not isinstance(model, bs.model.StanModel):
         raise TypeError("'model' is not of type ", str(bs.model.StanModel))
-    
+
     if not isinstance(samples, np.ndarray):
         raise TypeError("'samples' is not of type ", str(np.ndarray))
-    
+
     if samples.ndim == 1:
         # Single iteration
-        samples = samples.reshape((1,1,samples.shape[0]))
-    
+        samples = samples.reshape((1, 1, samples.shape[0]))
 
     unc_samples = np.array([[
-        model.param_unconstrain(np.array(samples[iter,chain,:])) for chain in range(samples.shape[1])]
+        model.param_unconstrain(np.array(samples[iter, chain, :])) for chain in range(samples.shape[1])]
         for iter in range(samples.shape[0])])
-    
+
     logProb = np.array([[
-        model.log_density(np.array(unc_samples[iter,chain,:])) for chain in range(unc_samples.shape[1])]
+        model.log_density(np.array(unc_samples[iter, chain, :])) for chain in range(unc_samples.shape[1])]
         for iter in range(unc_samples.shape[0])])
     return logProb
 

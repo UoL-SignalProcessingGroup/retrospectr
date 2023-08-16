@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-import ctypes
 import pytest
 import bridgestan as bs
 import cmdstanpy
@@ -15,7 +14,6 @@ from retrospectr.importance_weights import (
 )
 
 TEST_MODELS_PATH = os.path.join(Path(__file__).parent, 'test_models')
-#TEST_MODELS_PATH = os.path.join('test', 'test_models')
 
 
 @pytest.fixture
@@ -45,11 +43,13 @@ def eight_schools_logProbs():
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools_logProbs.npy'
     ))
 
+
 @pytest.fixture
 def eight_schools_log_weights():
     return np.load(os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools_log_weights.npy'
     ))
+
 
 @pytest.fixture
 def eight_schools_new_data():
@@ -123,53 +123,52 @@ def invalid_model():
 
 
 class TestCalculateLogWeights:
-    def test_good(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_new_data, eight_schools_log_weights):
+    def test_good(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_new_data,
+                  eight_schools_log_weights):
         log_weights = calculate_log_weights(
             eight_schools_model_file, eight_schools_samples,
             eight_schools_data, eight_schools_new_data)
         np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
-        
 
     # Should get RuntimeError from bridgestan
-    def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data, eight_schools_new_data):
+    def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data,
+                              eight_schools_new_data):
         with np.testing.assert_raises(RuntimeError):
-            log_weights = calculate_log_weights(
+            calculate_log_weights(
               eight_schools_model_file, eight_schools_samples,
               eight_schools_bad_data, eight_schools_new_data)
-            
+
     # Should get RuntimeError from bridgestan
-    def test_invalid_new_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_bad_data):
+    def test_invalid_new_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data,
+                              eight_schools_bad_data):
         with np.testing.assert_raises(RuntimeError):
-            log_weights = calculate_log_weights(
+            calculate_log_weights(
               eight_schools_model_file, eight_schools_samples,
               eight_schools_data, eight_schools_bad_data)
-            
+
     def test_invalid_stan_model(self, invalid_model, eight_schools_samples, eight_schools_data, eight_schools_new_data):
         with np.testing.assert_raises(ValueError):
-            log_weights = calculate_log_weights(
+            calculate_log_weights(
               invalid_model, eight_schools_samples,
               eight_schools_data, eight_schools_new_data)
-            
+
     def test_invalid_samples(self, invalid_model, seven_schools_samples, eight_schools_data, eight_schools_new_data):
         with np.testing.assert_raises(ValueError):
-            log_weights = calculate_log_weights(
+            calculate_log_weights(
               invalid_model, seven_schools_samples,
               eight_schools_data, eight_schools_new_data)
-#     def test_invalid_stan_model():
-#     def test_invalid_samples():
 
 
 class TestEvaluateLogProb():
     def test_good_single(self, eight_schools_bs_model, eight_schools_samples, eight_schools_logProbs):
-        samples = eight_schools_samples[0,0,:]
+        samples = eight_schools_samples[0, 0, :]
         log_prob = evaluate_logProb(eight_schools_bs_model, samples)
-        np.testing.assert_almost_equal(log_prob, eight_schools_logProbs[0,0])
+        np.testing.assert_almost_equal(log_prob, eight_schools_logProbs[0, 0])
 
     def test_good_array(self, eight_schools_bs_model, eight_schools_samples, eight_schools_logProbs):
         samples = np.array(eight_schools_samples)
         log_prob = evaluate_logProb(eight_schools_bs_model, samples)
         np.testing.assert_almost_equal(log_prob, eight_schools_logProbs)
-
 
     def test_invalid_model(self, invalid_model, eight_schools_samples):
         with np.testing.assert_raises(TypeError):
@@ -193,7 +192,7 @@ class TestExtractSamples:
 class TestCheckSampleDim:
     def test_good(self, eight_schools_bs_model, eight_schools_samples):
         sample_check = check_sample_dim(eight_schools_bs_model, eight_schools_samples)
-        assert sample_check == True
+        assert sample_check
 
     def test_bad(self, eight_schools_bs_model, seven_schools_samples):
         with np.testing.assert_raises(ValueError):
@@ -211,7 +210,7 @@ class TestCheckSampleDim:
 class TestCheckModels:
     def test_good(self, eight_schools_bs_model, eight_schools_new_bs_model):
         model_check = check_models(eight_schools_bs_model, eight_schools_new_bs_model)
-        assert model_check == True
+        assert model_check
 
     def test_bad(self, eight_schools_bs_model, seven_schools_bs_model):
         with np.testing.assert_raises(ValueError):
