@@ -1,33 +1,3 @@
-# retrospectr
-
-[![Coverage badge](https://github.com/alecksphillips/retrospectr/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/alecksphillips/retrospectr/tree/python-coverage-comment-action-data)
-
-
-Importance weight calculation for Stan model results with new data.
-
-
-Based on an R package which can be found [here](https://github.com/codatmo/stanIncrementalImportanceSampling)
-
-## Requirements
-```
-bridgestan
-numpy
-```
-
-
-## Installation
-retrospectr can be installed with either:
-```bash
-git clone https://github.com/alecksphillips/retrospectr.git
-pip install ./retrospectr
-```
-or
-```bash
-pip install -U git+https://github.com/alecksphillips/retrospectr.git
-```
-
-## Example
-```python
 import cmdstanpy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -91,7 +61,3 @@ df = pd.concat((df_original, df_new, df_resampled))
 
 seaborn.displot(df, x="theta", hue="model", kind="kde")
 plt.show()
-
-```
-
-![plot of example with resampled iterations](https://github.com/alecksphillips/retrospectr/blob/main/example.png?raw=true)
