@@ -4,6 +4,15 @@ from retrospectr.importance_weights import extract_samples
 
 
 def resample(samples, log_weights, seed=0):
+    """
+    Resample MCMC samples according to log_weights
+
+    param: samples: numpy array of MCMC samples or cmdstanpy.CmdStanMCMC object
+    param: log_weights: log_weights to use for resampling
+    param: seed: random seed for resampling
+
+    returns: numpy array of resampled samples
+    """
 
     if isinstance(samples, cmdstanpy.CmdStanMCMC):
         samples = extract_samples(samples)
