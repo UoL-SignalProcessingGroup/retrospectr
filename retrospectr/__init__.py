@@ -1,1 +1,1 @@
-all = ["importance_weights"]
+all = ["importance_weights", "resampling"]
