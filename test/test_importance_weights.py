@@ -4,6 +4,7 @@ import pytest
 import bridgestan as bs
 import cmdstanpy
 import numpy as np
+import json
 
 from retrospectr.importance_weights import (
     calculate_log_weights,
@@ -24,10 +25,24 @@ def eight_schools_model_file():
 
 
 @pytest.fixture
-def eight_schools_data():
+def eight_schools_data_file():
     return os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools.data.json'
     )
+
+
+@pytest.fixture
+def eight_schools_data_json(eight_schools_data_file):
+    with open(eight_schools_data_file) as f:
+        json_data = f.read()
+    return json_data
+
+
+@pytest.fixture
+def eight_schools_data_dict(eight_schools_data_file):
+    with open(eight_schools_data_file) as f:
+        json_dict = json.load(f)
+    return json_dict
 
 
 @pytest.fixture
@@ -52,14 +67,28 @@ def eight_schools_log_weights():
 
 
 @pytest.fixture
-def eight_schools_new_data():
+def eight_schools_new_data_file():
     return os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools.new_data.json'
     )
 
 
 @pytest.fixture
-def seven_schools_data():
+def eight_schools_new_data_json(eight_schools_new_data_file):
+    with open(eight_schools_new_data_file) as f:
+        json_data = f.read()
+    return json_data
+
+
+@pytest.fixture
+def eight_schools_new_data_dict(eight_schools_new_data_file):
+    with open(eight_schools_new_data_file) as f:
+        json_dict = json.load(f)
+    return json_dict
+
+
+@pytest.fixture
+def seven_schools_data_file():
     return os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'seven_schools.data.json'
     )
@@ -73,32 +102,32 @@ def seven_schools_samples():
 
 
 @pytest.fixture
-def eight_schools_bad_data():
+def eight_schools_bad_data_file():
     return os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools.bad_data.json'
     )
 
 
 @pytest.fixture
-def eight_schools_cmdstanpy_fit(eight_schools_model_file, eight_schools_data):
+def eight_schools_cmdstanpy_fit(eight_schools_model_file, eight_schools_data_file):
     model = cmdstanpy.CmdStanModel(stan_file=eight_schools_model_file)
-    fit = model.sample(data=eight_schools_data, chains=2, iter_sampling=200, iter_warmup=200, seed=0)
+    fit = model.sample(data=eight_schools_data_file, chains=2, iter_sampling=200, iter_warmup=200, seed=0)
     return fit
 
 
 @pytest.fixture
-def eight_schools_bs_model(eight_schools_model_file, eight_schools_data):
-    return bs.StanModel.from_stan_file(eight_schools_model_file, model_data=eight_schools_data)
+def eight_schools_bs_model(eight_schools_model_file, eight_schools_data_file):
+    return bs.StanModel.from_stan_file(eight_schools_model_file, model_data=eight_schools_data_file)
 
 
 @pytest.fixture
-def eight_schools_new_bs_model(eight_schools_model_file, eight_schools_new_data):
-    return bs.StanModel.from_stan_file(eight_schools_model_file, model_data=eight_schools_new_data)
+def eight_schools_new_bs_model(eight_schools_model_file, eight_schools_new_data_file):
+    return bs.StanModel.from_stan_file(eight_schools_model_file, model_data=eight_schools_new_data_file)
 
 
 @pytest.fixture
-def seven_schools_bs_model(eight_schools_model_file, seven_schools_data):
-    return bs.StanModel.from_stan_file(eight_schools_model_file, model_data=seven_schools_data)
+def seven_schools_bs_model(eight_schools_model_file, seven_schools_data_file):
+    return bs.StanModel.from_stan_file(eight_schools_model_file, model_data=seven_schools_data_file)
 
 
 @pytest.fixture
@@ -123,40 +152,55 @@ def invalid_model():
 
 
 class TestCalculateLogWeights:
-    def test_good(self, eight_schools_model_file, eight_schools_samples, eight_schools_data, eight_schools_new_data,
+    def test_good(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_file, eight_schools_new_data_file,
                   eight_schools_log_weights):
         log_weights = calculate_log_weights(
             eight_schools_model_file, eight_schools_samples,
-            eight_schools_data, eight_schools_new_data)
+            eight_schools_data_file, eight_schools_new_data_file)
         np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
 
-    # Should get RuntimeError from bridgestan
-    def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data,
-                              eight_schools_new_data):
+    def test_good_json_string_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_json,
+                                   eight_schools_new_data_json, eight_schools_log_weights):
+        log_weights = calculate_log_weights(
+            eight_schools_model_file, eight_schools_samples,
+            eight_schools_data_json, eight_schools_new_data_json)
+        np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
+
+    def test_good_python_dict_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_dict,
+                                   eight_schools_new_data_dict, eight_schools_log_weights):
+        log_weights = calculate_log_weights(
+            eight_schools_model_file, eight_schools_samples,
+            eight_schools_data_dict, eight_schools_new_data_dict)
+        np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
+
+    def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data_file,
+                              eight_schools_new_data_file):
+        # Should get RuntimeError from bridgestan
         with np.testing.assert_raises(RuntimeError):
             calculate_log_weights(
               eight_schools_model_file, eight_schools_samples,
-              eight_schools_bad_data, eight_schools_new_data)
+              eight_schools_bad_data_file, eight_schools_new_data_file)
 
-    # Should get RuntimeError from bridgestan
-    def test_invalid_new_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data,
-                              eight_schools_bad_data):
+    def test_invalid_new_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_file,
+                              eight_schools_bad_data_file):
+        # Should get RuntimeError from bridgestan
         with np.testing.assert_raises(RuntimeError):
             calculate_log_weights(
               eight_schools_model_file, eight_schools_samples,
-              eight_schools_data, eight_schools_bad_data)
+              eight_schools_data_file, eight_schools_bad_data_file)
 
-    def test_invalid_stan_model(self, invalid_model, eight_schools_samples, eight_schools_data, eight_schools_new_data):
+    def test_invalid_stan_model(self, invalid_model, eight_schools_samples, eight_schools_data_file,
+                                eight_schools_new_data_file):
         with np.testing.assert_raises(ValueError):
             calculate_log_weights(
               invalid_model, eight_schools_samples,
-              eight_schools_data, eight_schools_new_data)
+              eight_schools_data_file, eight_schools_data_file)
 
-    def test_invalid_samples(self, invalid_model, seven_schools_samples, eight_schools_data, eight_schools_new_data):
+    def test_invalid_samples(self, invalid_model, seven_schools_samples, eight_schools_data_file, eight_schools_new_data_file):
         with np.testing.assert_raises(ValueError):
             calculate_log_weights(
               invalid_model, seven_schools_samples,
-              eight_schools_data, eight_schools_new_data)
+              eight_schools_data_file, eight_schools_new_data_file)
 
 
 class TestEvaluateLogProb():
