@@ -173,6 +173,13 @@ class TestCalculateLogWeights:
             eight_schools_data_dict, eight_schools_new_data_dict)
         np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
 
+    def test_good_fit(self, eight_schools_model_file, eight_schools_cmdstanpy_fit, eight_schools_data_file,
+                      eight_schools_new_data_file, eight_schools_log_weights):
+        log_weights = calculate_log_weights(
+            eight_schools_model_file, eight_schools_cmdstanpy_fit,
+            eight_schools_data_file, eight_schools_new_data_file)
+        np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
+
     def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data_file,
                               eight_schools_new_data_file):
         # Should get RuntimeError from bridgestan
