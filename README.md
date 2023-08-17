@@ -5,8 +5,8 @@
 | Name                               |    Stmts |     Miss |   Branch |   BrPart |    Cover |   Missing |
 |----------------------------------- | -------: | -------: | -------: | -------: | -------: | --------: |
 | retrospectr/\_\_init\_\_.py        |        1 |        0 |        0 |        0 |     100% |           |
-| retrospectr/importance\_weights.py |       52 |        0 |       26 |        0 |     100% |           |
-|                          **TOTAL** |   **53** |    **0** |   **26** |    **0** | **100%** |           |
+| retrospectr/importance\_weights.py |       57 |        0 |       30 |        0 |     100% |           |
+|                          **TOTAL** |   **58** |    **0** |   **30** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
