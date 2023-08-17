@@ -3,8 +3,6 @@ import os
 import pytest
 import cmdstanpy
 import numpy as np
-import json
-
 from retrospectr.resampling import resample
 
 TEST_MODELS_PATH = os.path.join(Path(__file__).parent, 'test_models')
@@ -22,20 +20,6 @@ def eight_schools_data_file():
     return os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools.data.json'
     )
-
-
-@pytest.fixture
-def eight_schools_data_json(eight_schools_data_file):
-    with open(eight_schools_data_file) as f:
-        json_data = f.read()
-    return json_data
-
-
-@pytest.fixture
-def eight_schools_data_dict(eight_schools_data_file):
-    with open(eight_schools_data_file) as f:
-        json_dict = json.load(f)
-    return json_dict
 
 
 @pytest.fixture
@@ -57,27 +41,6 @@ def eight_schools_resampled_samples():
     return np.load(os.path.join(
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools_resampled_samples.npy'
     ))
-
-
-@pytest.fixture
-def seven_schools_data_file():
-    return os.path.join(
-        TEST_MODELS_PATH, 'eight_schools', 'seven_schools.data.json'
-    )
-
-
-@pytest.fixture
-def seven_schools_samples():
-    return np.load(os.path.join(
-        TEST_MODELS_PATH, 'eight_schools', 'seven_schools_samples.npy'
-    ))
-
-
-@pytest.fixture
-def eight_schools_bad_data_file():
-    return os.path.join(
-        TEST_MODELS_PATH, 'eight_schools', 'eight_schools.bad_data.json'
-    )
 
 
 @pytest.fixture
