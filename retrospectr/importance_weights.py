@@ -2,7 +2,7 @@ import bridgestan as bs
 import numpy as np
 import cmdstanpy
 from scipy.special import logsumexp
-
+import json
 
 def calculate_log_weights(model, old_samples, old_data, new_data):
     """
@@ -11,11 +11,18 @@ def calculate_log_weights(model, old_samples, old_data, new_data):
 
     param: model: Path to .stan file containing the model
     param: old_samples: numpy array of samples from model with original/old data
-    param: old_data: Path to json file containing old data
-    param: new_data: Path to json file containing new data
+    param: old_data: Old data, one of: python dict; json string literal; path to .json file
+    param: new_data: New data, one of: python dict; json string literal; path to .json file
 
     returns: log importance weights of old_samples conditioned on new data
     """
+
+    if isinstance(old_data, dict):
+        old_data = json.dumps(old_data)
+
+    if isinstance(new_data, dict):
+        new_data = json.dumps(new_data)
+
     # check old samples match the model+old_data
     old_model = bs.StanModel.from_stan_file(model, model_data=old_data)
     check_sample_dim(old_model, old_samples)
