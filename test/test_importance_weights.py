@@ -41,8 +41,9 @@ def eight_schools_data_json(eight_schools_data_file):
 @pytest.fixture
 def eight_schools_data_dict(eight_schools_data_file):
     with open(eight_schools_data_file) as f:
-        json_dict= json.load(f)
+        json_dict = json.load(f)
     return json_dict
+
 
 @pytest.fixture
 def eight_schools_samples():
@@ -71,17 +72,20 @@ def eight_schools_new_data_file():
         TEST_MODELS_PATH, 'eight_schools', 'eight_schools.new_data.json'
     )
 
+
 @pytest.fixture
 def eight_schools_new_data_json(eight_schools_new_data_file):
     with open(eight_schools_new_data_file) as f:
         json_data = f.read()
     return json_data
 
+
 @pytest.fixture
 def eight_schools_new_data_dict(eight_schools_new_data_file):
     with open(eight_schools_new_data_file) as f:
         json_dict = json.load(f)
     return json_dict
+
 
 @pytest.fixture
 def seven_schools_data_file():
@@ -155,39 +159,38 @@ class TestCalculateLogWeights:
             eight_schools_data_file, eight_schools_new_data_file)
         np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
 
-
-    def test_good_json_string_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_json, eight_schools_new_data_json,
-                  eight_schools_log_weights):
+    def test_good_json_string_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_json,
+                                   eight_schools_new_data_json, eight_schools_log_weights):
         log_weights = calculate_log_weights(
             eight_schools_model_file, eight_schools_samples,
             eight_schools_data_json, eight_schools_new_data_json)
         np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
 
-    def test_good_python_dict_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_dict, eight_schools_new_data_dict,
-                  eight_schools_log_weights):
+    def test_good_python_dict_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_dict,
+                                   eight_schools_new_data_dict, eight_schools_log_weights):
         log_weights = calculate_log_weights(
             eight_schools_model_file, eight_schools_samples,
             eight_schools_data_dict, eight_schools_new_data_dict)
         np.testing.assert_almost_equal(log_weights, eight_schools_log_weights)
 
-
-    # Should get RuntimeError from bridgestan
     def test_invalid_old_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_bad_data_file,
                               eight_schools_new_data_file):
+        # Should get RuntimeError from bridgestan
         with np.testing.assert_raises(RuntimeError):
             calculate_log_weights(
               eight_schools_model_file, eight_schools_samples,
               eight_schools_bad_data_file, eight_schools_new_data_file)
 
-    # Should get RuntimeError from bridgestan
     def test_invalid_new_data(self, eight_schools_model_file, eight_schools_samples, eight_schools_data_file,
                               eight_schools_bad_data_file):
+        # Should get RuntimeError from bridgestan
         with np.testing.assert_raises(RuntimeError):
             calculate_log_weights(
               eight_schools_model_file, eight_schools_samples,
               eight_schools_data_file, eight_schools_bad_data_file)
 
-    def test_invalid_stan_model(self, invalid_model, eight_schools_samples, eight_schools_data_file, eight_schools_new_data_file):
+    def test_invalid_stan_model(self, invalid_model, eight_schools_samples, eight_schools_data_file,
+                                eight_schools_new_data_file):
         with np.testing.assert_raises(ValueError):
             calculate_log_weights(
               invalid_model, eight_schools_samples,
