@@ -52,3 +52,16 @@ new_logProbs = np.array([[new_model.log_density(unc_samples[iter, chain], jacobi
 log_weights = new_logProbs - logProbs
 log_weights = log_weights - logsumexp(log_weights)
 np.save(os.path.join(model_path, "eight_schools_log_weights.npy"), log_weights)
+
+nsamples = samples.shape[0]*samples.shape[1]
+tmp_samples = samples.reshape((nsamples, 1, samples.shape[2]))
+tmp_log_weights = log_weights.reshape((nsamples))
+
+rng = np.random.default_rng(seed=0)
+resampled_iterations = rng.choice(
+        nsamples,
+        size=nsamples,
+        p=np.exp(tmp_log_weights))
+
+resampled_samples = tmp_samples[resampled_iterations, :, :]
+np.save(os.path.join(model_path, "eight_schools_resampled_samples.npy"), resampled_samples)
