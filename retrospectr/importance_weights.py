@@ -24,6 +24,9 @@ def calculate_log_weights(model, old_samples, old_data, new_data):
     if isinstance(new_data, dict):
         new_data = json.dumps(new_data)
 
+    if isinstance(old_samples, cmdstanpy.CmdStanMCMC):
+        old_samples = extract_samples(old_samples)
+
     # check old samples match the model+old_data
     old_model = bs.StanModel.from_stan_file(model, model_data=old_data)
     check_sample_dim(old_model, old_samples)
