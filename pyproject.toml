@@ -13,6 +13,6 @@ readme = "README.md"
 dynamic = ["version"]
 
 [project.urls]
-"Repository" = "https://github.com/alecksphillips/retrospectr"
+"Repository" = "https://github.com/UoL-SignalProcessingGroup/retrospectr"
 
 [tool.setuptools_scm]

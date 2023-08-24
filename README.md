@@ -1,6 +1,6 @@
 # retrospectr
 
-[![Coverage badge](https://github.com/alecksphillips/retrospectr/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/alecksphillips/retrospectr/tree/python-coverage-comment-action-data)
+[![Coverage badge](https://github.com/UoL-SignalProcessingGroup/retrospectr/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/UoL-SignalProcessingGroup/retrospectr/tree/python-coverage-comment-action-data)
 
 
 Importance weight calculation for Stan model results with new data.
@@ -23,12 +23,12 @@ pytest-cov
 ## Installation
 retrospectr can be installed with either:
 ```bash
-git clone https://github.com/alecksphillips/retrospectr.git
+git clone https://github.com/UoL-SignalProcessingGroup/retrospectr.git
 pip install ./retrospectr
 ```
 or
 ```bash
-pip install -U git+https://github.com/alecksphillips/retrospectr.git
+pip install -U git+https://github.com/UoL-SignalProcessingGroup/retrospectr.git
 ```
 
 ## Example
@@ -85,4 +85,4 @@ plt.show()
 
 ```
 
-![plot of example with resampled iterations](https://github.com/alecksphillips/retrospectr/blob/main/example.png?raw=true)
+![plot of example with resampled iterations](https://github.com/UoL-SignalProcessingGroup/retrospectr/blob/main/example.png?raw=true)
