@@ -16,7 +16,7 @@ Below are examples of the badges you can use in your main branch `README` file.
 
 ### Direct image
 
-[![Coverage badge](https://github.com/alecksphillips/retrospectr/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/alecksphillips/retrospectr/tree/python-coverage-comment-action-data)
+[![Coverage badge](https://github.com/UoL-SignalProcessingGroup/retrospectr/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/UoL-SignalProcessingGroup/retrospectr/tree/python-coverage-comment-action-data)
 
 This is the one to use if your repository is private or if you don't want to customize anything.
 
