@@ -6,12 +6,17 @@
 Importance weight calculation for Stan model results with new data.
 
 
-Based on an R package which can be found [here](https://github.com/codatmo/stanIncrementalImportanceSampling)
+Based on an R package which can be found [here](https://github.com/codatmo/stanIncrementalImportanceSampling).
 
 ## Requirements
 ```
 bridgestan
+cmdstanpy
 numpy
+scipy
+flake8
+pytest
+pytest-cov
 ```
 
 
